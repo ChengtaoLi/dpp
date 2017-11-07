@@ -1,25 +1,24 @@
 import numpy as np
 import torch
+import scipy
 
 def get_eig(L, flag_gpu=False):
     if flag_gpu:
-        L = torch.from_numpy(L).cuda()
+        pass
     else:
-        L = torch.from_numpy(L)
-
-    return torch.symeig(L, eigenvectors=True)
+        return scipy.linalg.eigh(L)
 
 def get_sympoly(D, k, flag_gpu=False):
-    N = D.size(0)
+    N = D.shape[0]
     if flag_gpu:
-        E = torch.zeros(k+1, N+1).float().cuda()
+        pass
     else:
-        E = torch.zeros(k+1, N+1).float()
+        E = np.zeros((k+1, N+1))
 
     E[0] = 1.
     for l in xrange(1,k+1):
-        E[l,1:] = D.float().unsqueeze(0) * E[l-1,:N].unsqueeze(0)
-        torch.cumsum(E[l], dim=0, out=E[l])
+        E[l,1:] = np.copy(np.multiply(D, E[l-1,:N]))
+        E[l] = np.cumsum(E[l], axis=0)
 
     return E
 
