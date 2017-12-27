@@ -29,3 +29,32 @@ def gershgorin(A):
     lambda_min = np.min(2 * np.diag(A) - radius)
 
     return lambda_max, lambda_min
+
+
+def kpp(X, k, flag_kernel=False):
+    # if X is not kernel, rows of X are samples
+
+    N = X.shape[0]
+    rst = np.zeros(k, dtype=int)
+    rst[0] = np.random.randint(N)
+
+    if flag_kernel:
+        # kernel kmeans++
+        v = np.ones(N) * np.inf
+        for i in xrange(1, k):
+            Y = np.diag(X) + np.ones(N)*X[rst[i-1],rst[i-1]] - 2*X[rst[i-1]]
+            v = np.minimum(v,Y)
+            r = np.random.uniform()
+            rst[i] = np.where(v.cumsum() / v.sum() >= r)[0][0]
+
+    else:
+        # normal kmeans++
+        centers = [X[rst[0]]]
+        for i in xrange(1, k):
+            dist = np.array([min([np.linalg.norm(x-c)**2 for c in centers]) for x in X])
+            r = np.random.uniform()
+            ind = np.where(dist.cumsum() / dist.sum() >= r)[0][0]
+            rst[i] = ind
+            centers.append(X[ind])
+
+    return rst
