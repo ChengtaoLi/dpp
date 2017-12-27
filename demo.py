@@ -6,6 +6,7 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
 import sampler.dpp as dpp
+import sampler.mcdpp as mcdpp
 import sampler.utils as utils
 
 # currently only support cpu mode
@@ -21,19 +22,24 @@ L = np.exp(-pairwise_dists ** 2 / 0.5 ** 2)
 D, V = utils.get_eig(L, flag_gpu=flag_gpu)
 
 # Samples and plot from unif and standard DPPs
-dpp_smpl  = dpp.sample_dpp(D, V, flag_gpu=flag_gpu)
+dpp_smpl  = dpp.sample(D, V, flag_gpu=flag_gpu)
+mcdpp_smpl = mcdpp.sample(L, 20000, flag_gpu=flag_gpu)
 unif_smpl = np.random.permutation(len(X))[:len(dpp_smpl)]
 
-plt.figure(figsize=(8,4))
-plt.subplot(1,2,1)
+plt.figure(figsize=(12,4))
+plt.subplot(1,3,1)
 plt.plot(X[unif_smpl, 0], X[unif_smpl, 1],'r.',)
 plt.title('Unif')
 
-plt.subplot(1,2,2)
+plt.subplot(1,3,2)
 plt.plot(X[dpp_smpl, 0], X[dpp_smpl, 1],'b.',)
 plt.title('DPP')
 
-plt.savefig('fig/unif-dpp', bbox_inches='tight')
+plt.subplot(1,3,3)
+plt.plot(X[mcdpp_smpl, 0], X[mcdpp_smpl, 1],'g.',)
+plt.title('DPP-MC')
+
+plt.savefig('fig/unif-dpp-mcdpp', bbox_inches='tight')
 
 
 # Samples and plot from unif and k-DPPs
@@ -42,17 +48,22 @@ E = utils.get_sympoly(D, k, flag_gpu=flag_gpu)
 
 # Samples and plot from unif and standard DPPs
 unif_smpl = np.random.permutation(len(X))[:k]
-dpp_smpl  = dpp.sample_dpp(D, V, E=E, k=k, flag_gpu=flag_gpu)
+dpp_smpl  = dpp.sample(D, V, E=E, k=k, flag_gpu=flag_gpu)
+mcdpp_sample = mcdpp.sample(L, 20000, k=k, flag_gpu=flag_gpu)
 
-plt.figure(figsize=(8,4))
-plt.subplot(1,2,1)
+plt.figure(figsize=(12,4))
+plt.subplot(1,3,1)
 plt.plot(X[unif_smpl, 0], X[unif_smpl, 1],'r.',)
 plt.title('Unif')
 
-plt.subplot(1,2,2)
+plt.subplot(1,3,2)
 plt.plot(X[dpp_smpl, 0], X[dpp_smpl, 1],'b.',)
-plt.title('k-DPP')
+plt.title('kDPP')
 
-plt.savefig('fig/unif-kdpp', bbox_inches='tight')
+plt.subplot(1,3,3)
+plt.plot(X[dpp_smpl, 0], X[dpp_smpl, 1],'g.',)
+plt.title('kDPP-MC')
+
+plt.savefig('fig/unif-kdpp-mckdpp', bbox_inches='tight')
 
 

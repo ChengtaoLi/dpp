@@ -8,7 +8,7 @@ from scipy.linalg import sqrtm, inv
 #   k: size of sampled subset
 #   flag_gpu: use gpu acceleration
 
-def sample_dpp(D, V, E=None, k=None, flag_gpu=False):
+def sample(D, V, E=None, k=None, flag_gpu=False):
     N = D.shape[0]
     if k is None:
         # general dpp

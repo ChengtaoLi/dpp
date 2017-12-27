@@ -1,5 +1,4 @@
 import numpy as np
-import torch
 import scipy
 
 def get_eig(L, flag_gpu=False):
@@ -23,4 +22,10 @@ def get_sympoly(D, k, flag_gpu=False):
     return E
 
 
+def gershgorin(A):
+    radius = np.sum(A, axis=0)
+    
+    lambda_max = np.max(radius)
+    lambda_min = np.min(2 * np.diag(A) - radius)
 
+    return lambda_max, lambda_min
