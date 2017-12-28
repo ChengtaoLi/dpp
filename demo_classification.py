@@ -53,8 +53,8 @@ for k_idx in xrange(len(k_group)):
 
 plt.figure(figsize=(4,4))
 plt.title('Approximate Kernel LR Test Error')
-plt.plot(error_unif, label='unif', lw=2)
-plt.plot(error_dpp, label='dpp', lw=2)
+plt.plot(k_group, error_unif, label='unif', lw=2)
+plt.plot(k_group, error_dpp, label='dpp', lw=2)
 plt.legend()
 
 plt.savefig('fig/classification', bbox_inches='tight')
