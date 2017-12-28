@@ -4,9 +4,6 @@ import torch
 from torch.autograd import Variable
 from torch import optim
 
-from data_util import load_mnist
-
-
 def build_model(input_dim, output_dim):
     # We don't need the softmax layer here since CrossEntropyLoss already
     # uses it internally.
