@@ -22,8 +22,8 @@ L = np.exp(-pairwise_dists ** 2 / 10 ** 2)
 trnL = L[:nTrn, :nTrn]
 
 k_group = [10,20,30,50,70,100]
-error_unif = np.zeros(len(k_group))
-error_dpp = np.zeros(len(k_group))
+error_unif = np.zeros((2, len(k_group)))
+error_dpp = np.zeros((2, len(k_group)))
 
 for run_id in xrange(5):
 	for k_idx in xrange(len(k_group)):
@@ -37,7 +37,9 @@ for run_id in xrange(5):
 		trnX_prime = X_prime[:nTrn]
 		tstX_prime = X_prime[nTrn:]
 		
-		error_unif[k_idx] += lr.train_predict(trnX_prime, trnY, tstX_prime, tstY)
+		tmp_trn_err, tmp_tst_err = lr.train_predict(trnX_prime, trnY, tstX_prime, tstY)
+		error_unif[0, k_idx] += tmp_trn_err
+		error_unif[1, k_idx] += tmp_tst_err
 
 		# DPP
 		D, V = utils.get_eig(trnL, flag_gpu=flag_gpu)
@@ -50,15 +52,23 @@ for run_id in xrange(5):
 		trnX_prime = X_prime[:nTrn]
 		tstX_prime = X_prime[nTrn:]
 
-		error_dpp[k_idx] += lr.train_predict(trnX_prime, trnY, tstX_prime, tstY)
+		tmp_trn_err, tmp_tst_err = lr.train_predict(trnX_prime, trnY, tstX_prime, tstY)
+		error_dpp[0, k_idx] += tmp_trn_err
+		error_dpp[1, k_idx] += tmp_tst_err
 
 error_unif /= 5.
 error_dpp /= 5.
 
-plt.figure(figsize=(4,4))
+plt.figure(figsize=(8,4))
+plt.subplot(1,2,1)
+plt.title('Approximate Kernel LR Train Error')
+plt.plot(k_group, error_unif[0], label='unif', lw=2)
+plt.plot(k_group, error_dpp[0], label='dpp', lw=2)
+
+plt.subplot(1,2,2)
 plt.title('Approximate Kernel LR Test Error')
-plt.plot(k_group, error_unif, label='unif', lw=2)
-plt.plot(k_group, error_dpp, label='dpp', lw=2)
+plt.plot(k_group, error_unif[1], label='unif', lw=2)
+plt.plot(k_group, error_dpp[1], label='dpp', lw=2)
 plt.legend()
 
 plt.savefig('fig/classification', bbox_inches='tight')

@@ -64,5 +64,10 @@ def train_predict(trX, trY, teX, teY):
         print("Epoch %d, cost = %f, acc = %.2f%%"
               % (i + 1, cost / num_batches, 100. * np.mean(predY == teY)))
 
-    return 100. * (1 - np.mean(predY == teY))
+    pred_trY = predict(model, trX)
+    pred_teY = predict(model, teX)
+
+    return 100. * (1 - np.mean(pred_trY == trY)), 100. * (1 - np.mean(pred_teY == teY))
+
+
 
