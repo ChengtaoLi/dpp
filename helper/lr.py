@@ -67,7 +67,7 @@ def train_predict(trX, trY, teX, teY):
     pred_trY = predict(model, trX)
     pred_teY = predict(model, teX)
 
-    return 100. * (1 - np.mean(pred_trY == trY)), 100. * (1 - np.mean(pred_teY == teY))
+    return 100. * (1 - np.mean(pred_trY == trY.data.numpy())), 100. * (1 - np.mean(pred_teY == teY))
 
 
 
