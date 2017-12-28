@@ -17,9 +17,6 @@ nTrn = 4000
 nTst = 1000
 trnX, tstX, trnY, tstY = utils.load_mnist(ntrain=nTrn, ntest=nTst)
 
-print(trnX.shape)
-print(trnY.shape)
-print(tstX.shape)
 pairwise_dists = squareform(pdist(np.concatenate((trnX, tstX)), 'euclidean'))
 L = np.exp(-pairwise_dists ** 2 / 100 ** 2)
 trnL = L[:nTrn, :nTrn]
@@ -39,6 +36,8 @@ for k_idx in xrange(len(k_group)):
 	trnX_prime = X_prime[:nTrn]
 	tstX_prime = X_prime[nTrn:]
 	
+	print(trnX_prime.shape)
+	print(tstX_prime.shape)
 	error_unif[k_idx] = lr.train_predict(trnX_prime, trnY, tstX_prime, tstY)
 
 	# DPP

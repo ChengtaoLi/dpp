@@ -22,6 +22,8 @@ def train(model, loss, optimizer, x_val, y_val):
 
     # Forward
     fx = model.forward(x)
+    print(fx.size())
+    print(y.size())
     output = loss.forward(fx, y)
 
     # Backward
