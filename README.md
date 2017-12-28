@@ -9,16 +9,19 @@ This repository includes sampling methods for *determinantal point processes* (*
 * `scipy`
 * `matplotlib`
 
+## Currently Available Methods
+
+* Exact (k)DPP sampling (with eigen-decomposition)
+* Markov Chain Monte Carlo Sampling for (k)DPP (with Gaussian-Auadrature Acceleration)
+
 ---
 
-## Current Available Methods
-
-#### Exact DPP sampling (with eigen-decomposition)
-#### Markov Chain Monte Carlo Sampling for DPP (with Gaussian-Auadrature Acceleration)
+## Toy Demo ('demo.py')
 
 ![](fig/unif-dpp.png)
 
-#### Exact k-DPP sampling (with eigen-decomposition)
-#### Markov Chain Monte Carlo Sampling for k-DPP (with Gaussian-Auadrature Acceleration)
-
 ![](fig/unif-kdpp.png)
+
+## Demo on Nystrom Method and Approximate Kernel Ridge Regression 
+
+![](fig/regression.png)
