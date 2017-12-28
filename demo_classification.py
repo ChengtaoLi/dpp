@@ -18,10 +18,10 @@ nTst = 1000
 trnX, tstX, trnY, tstY = utils.load_mnist(ntrain=nTrn, ntest=nTst)
 
 pairwise_dists = squareform(pdist(np.concatenate((trnX, tstX)), 'euclidean'))
-L = np.exp(-pairwise_dists ** 2 / 100 ** 2)
+L = np.exp(-pairwise_dists ** 2 / 50 ** 2)
 trnL = L[:nTrn, :nTrn]
 
-k_group = [20,30,50,70,100]
+k_group = [50,100,150,200,300]
 error_unif = np.zeros(len(k_group))
 error_dpp = np.zeros(len(k_group))
 
