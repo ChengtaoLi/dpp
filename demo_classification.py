@@ -18,7 +18,7 @@ nTst = 1000
 trnX, tstX, trnY, tstY = utils.load_mnist(ntrain=nTrn, ntest=nTst)
 
 pairwise_dists = squareform(pdist(np.concatenate((trnX, tstX)), 'euclidean'))
-L = np.exp(-pairwise_dists ** 2 / 5 ** 2)
+L = np.exp(-pairwise_dists ** 2 / 20 ** 2)
 trnL = L[:nTrn, :nTrn]
 
 k_group = [10,20,30,50,70,100]
