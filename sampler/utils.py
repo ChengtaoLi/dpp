@@ -108,7 +108,7 @@ def one_hot(x, n):
     return o_h
 
 
-def load_mnist(ntrain=4000, ntest=1000, onehot=True):
+def load_mnist(ntrain=4000, ntest=1000, onehot=False):
     data_dir = os.path.join(DATASET_DIR, 'mnist/')
     if not path.exists(data_dir):
         download_mnist(data_dir)
