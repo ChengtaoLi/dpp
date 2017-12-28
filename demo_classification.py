@@ -15,7 +15,7 @@ import helper.lr as lr
 flag_gpu = False
 nTrn = 4000
 nTst = 1000
-trnX, trnY, tstX, tstY = utils.load_mnist(ntrain=nTrn, ntest=nTst)
+trnX, tstX, trnY, tstY = utils.load_mnist(ntrain=nTrn, ntest=nTst)
 
 print(trnX.shape)
 print(trnY.shape)
