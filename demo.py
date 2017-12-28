@@ -22,8 +22,11 @@ L = np.exp(-pairwise_dists ** 2 / 0.5 ** 2)
 D, V = utils.get_eig(L, flag_gpu=flag_gpu)
 
 # Samples and plot from unif and standard DPPs
+print('DPP-Eigendecomp')
 dpp_smpl  = dpp.sample(D, V, flag_gpu=flag_gpu)
-mcdpp_smpl = mcdpp.sample(L, 20000, flag_gpu=flag_gpu)
+mc_init = utils.kpp(L, len(X), flag_kernel=True)
+print('DPP-MCMC')
+mcdpp_smpl = mcdpp.sample(L, 5000, init_rst=mc_init, flag_gpu=flag_gpu)
 unif_smpl = np.random.permutation(len(X))[:len(dpp_smpl)]
 
 plt.figure(figsize=(12,4))
@@ -48,8 +51,11 @@ E = utils.get_sympoly(D, k, flag_gpu=flag_gpu)
 
 # Samples and plot from unif and standard DPPs
 unif_smpl = np.random.permutation(len(X))[:k]
+print('kDPP-Eigendecomp')
 dpp_smpl  = dpp.sample(D, V, E=E, k=k, flag_gpu=flag_gpu)
-mcdpp_sample = mcdpp.sample(L, 20000, k=k, flag_gpu=flag_gpu)
+print('kDPP-MCMC')
+mc_init = utils.kpp(L, k, flag_kernel=True)
+mcdpp_sample = mcdpp.sample(L, 5000, k=k, init_rst=mc_init, flag_gpu=flag_gpu)
 
 plt.figure(figsize=(12,4))
 plt.subplot(1,3,1)

@@ -14,7 +14,7 @@ import utils
 def sample(L, mix_step, k=None, init_rst=None, flag_gpu=False):
     N = L.shape[0]
     rst = init_rst
-    tic_len = mix_step // 10
+    tic_len = mix_step // 5
 
     if k is None:
         # general dpp
@@ -41,7 +41,7 @@ def sample(L, mix_step, k=None, init_rst=None, flag_gpu=False):
                 if not flag:
                     rst = np.append(rst, [u])
                     A = np.r_[np.c_[A, bu.transpose()], np.c_[bu, cu]]
-                    
+
             else: # try to remove
                 ind = ind[0]
                 tmp_rst = np.copy(rst)
