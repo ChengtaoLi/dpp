@@ -17,6 +17,9 @@ nTrn = 4000
 nTst = 1000
 trnX, trnY, tstX, tstY = utils.load_mnist(ntrain=nTrn, ntest=nTst)
 
+print(trnX.shape)
+print(trnY.shape)
+print(tstX.shape)
 pairwise_dists = squareform(pdist(np.concatenate((trnX, tstX)), 'euclidean'))
 L = np.exp(-pairwise_dists ** 2 / 100 ** 2)
 trnL = L[:nTrn, :nTrn]
