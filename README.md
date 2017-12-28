@@ -22,6 +22,14 @@ This repository includes sampling methods for *determinantal point processes* (*
 
 ![](fig/unif-kdpp.png)
 
-## Demo on Nystrom Method and Approximate Kernel Ridge Regression 
+## Demo on Nystrom Method
+
+![](fig/nystrom.png)
+
+## Demo on Approximate Kernel Ridge Regression 
 
 ![](fig/regression.png)
+
+## Demo on Approximate Kernel Logistic Regression
+
+![](fig/classification.png)
