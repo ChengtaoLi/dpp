@@ -13,8 +13,8 @@ import sampler.utils as utils
 flag_gpu = False
 
 # Construct kernel matrix
-Ngrid = 100
-X = np.mgrid[-2:2:4./Ngrid, -2:2:4./Ngrid].reshape(2,Ngrid**2).transpose()
+Ngrid = 50
+X = np.mgrid[-1:1:2./Ngrid, -1:1:2./Ngrid].reshape(2,Ngrid**2).transpose()
 pairwise_dists = squareform(pdist(X, 'euclidean'))
 L = np.exp(-pairwise_dists ** 2 / 0.5 ** 2)
 
@@ -55,7 +55,7 @@ print('kDPP-Eigendecomp')
 dpp_smpl  = dpp.sample(D, V, E=E, k=k, flag_gpu=flag_gpu)
 print('kDPP-MCMC')
 mc_init = utils.kpp(L, k, flag_kernel=True)
-mcdpp_sample = mcdpp.sample(L, 5000, k=k, init_rst=mc_init, flag_gpu=flag_gpu)
+mcdpp_smpl = mcdpp.sample(L, 5000, k=k, init_rst=mc_init, flag_gpu=flag_gpu)
 
 plt.figure(figsize=(12,4))
 plt.subplot(1,3,1)
@@ -67,7 +67,7 @@ plt.plot(X[dpp_smpl, 0], X[dpp_smpl, 1],'b.',)
 plt.title('kDPP')
 
 plt.subplot(1,3,3)
-plt.plot(X[dpp_smpl, 0], X[dpp_smpl, 1],'g.',)
+plt.plot(X[mcdpp_smpl, 0], X[dpp_smpl, 1],'g.',)
 plt.title('kDPP-MC')
 
 plt.savefig('fig/unif-kdpp-mckdpp', bbox_inches='tight')
