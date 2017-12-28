@@ -22,3 +22,7 @@ This repository includes sampling methods for *determinantal point processes* (*
 #### Markov Chain Monte Carlo Sampling for k-DPP (with Gaussian-Auadrature Acceleration)
 
 ![](fig/unif-kdpp.png)
+
+# Results on Nystrom method and approximate kernel ridge regression
+
+![](fig/regression.png)
