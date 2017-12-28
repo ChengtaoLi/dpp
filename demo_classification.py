@@ -36,8 +36,6 @@ for k_idx in xrange(len(k_group)):
 	trnX_prime = X_prime[:nTrn]
 	tstX_prime = X_prime[nTrn:]
 	
-	print(trnX_prime.shape)
-	print(tstX_prime.shape)
 	error_unif[k_idx] = lr.train_predict(trnX_prime, trnY, tstX_prime, tstY)
 
 	# DPP
