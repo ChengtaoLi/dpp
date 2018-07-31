@@ -4,7 +4,6 @@ This repository includes sampling methods for *determinantal point processes* (*
 
 ## Prerequisites
 * `Python 2.7`
-* `PyTorch >= 0.2`
 * `numpy`
 * `scipy`
 * `matplotlib`
@@ -12,6 +11,9 @@ This repository includes sampling methods for *determinantal point processes* (*
 ## Currently Available Methods
 
 * Exact (k)DPP sampling (with eigen-decomposition)
+
+## Under Construction
+
 * Markov Chain Monte Carlo Sampling for (k)DPP (with Gaussian-Auadrature Acceleration)
 
 ---
