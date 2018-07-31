@@ -7,6 +7,7 @@ This repository includes sampling methods for *determinantal point processes* (*
 * `numpy`
 * `scipy`
 * `matplotlib`
+* `Matlab`
 
 ## Currently Available Methods
 
