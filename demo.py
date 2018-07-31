@@ -24,7 +24,7 @@ D, V = utils.get_eig(L, flag_gpu=flag_gpu)
 # Samples and plot from unif and standard DPPs
 print('DPP-Eigendecomp')
 dpp_smpl  = dpp.sample(D, V, flag_gpu=flag_gpu)
-mc_init = utils.kpp(L, len(X), flag_kernel=True)
+unif_smpl = np.random.permutation(len(X))[:len(dpp_smpl)]
 
 plt.figure(figsize=(8,4))
 plt.subplot(1,2,1)
