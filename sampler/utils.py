@@ -38,12 +38,12 @@ def get_sympoly(D, k, flag_gpu=False):
 
 
 def gershgorin(A):
-    radius = np.sum(A, axis=0)
+    radius = np.sum(np.absolute(A), axis=0)
     
     lambda_max = np.max(radius)
     lambda_min = np.min(2 * np.diag(A) - radius)
 
-    return lambda_max, lambda_min
+    return lambda_min, lambda_max
 
 
 def kpp(X, k, flag_kernel=False):

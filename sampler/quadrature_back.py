@@ -8,13 +8,12 @@ def gauss_dpp_judge(A, u, prob, lambda_min, lambda_max):
     # Gauss                     -> gauss(1,:)
     # Gauss Radau Lower Bound   -> gauss(2,:)
     # Gauss Radau Upper Bound   -> gauss(3,:)
-    # Gauss Lobatto             -> gauss(4,:)
 
     # Initialization
     K = A.shape[0]
-    gauss = np.zeros(4)
-
-    u_len = np.dot(u,u)
+    gauss = np.zeros(3)
+    g = 0
+    u_len = np.inner(u,u)
 
     # case that the vector is too small
     if u_len < 1e-10:
@@ -23,77 +22,57 @@ def gauss_dpp_judge(A, u, prob, lambda_min, lambda_max):
         else:
             return False
 
-    g = 0
-    p = np.copy(u)
+    uPrev = np.zeros(K)
+    uCurr = u / np.linalg.norm(u)
     beta = 0
-    gamma = 1
-    c = 1
-
-    f, fU, fL, fT = 0, 0, 0, 0
-    delta, deltaU, deltaL = 0, 0, 0
-    eta, etaT = 0, 0
-    alpha, alphaU, alphaL, alphaT = 0, 0, 0, 0
-
-    truth = np.inner(u, inv(A).dot(u));
 
     # CGQL Main Iteration
-    for k in xrange(2*K):
-        # print('--k: {}'.format(k))
-
-        newGamma = np.dot(u, u) / np.dot(p, np.dot(A, p))
-        alpha = 1 / newGamma + beta / gamma
-        gamma = newGamma
+    for k in xrange(K):
+        tmp = A.dot(uCurr)
+        alpha = np.inner(uCurr, tmp)
 
         if k == 0:
-            f = 1 / alpha
+            g = 1 / alpha
+            c = 1
             delta = alpha
             deltaU = alpha - lambda_min
             deltaL = alpha - lambda_max
         else:
-            c = c * eta / (delta**2)
-            delta = 1 / gamma
-            f = gamma * c
-            deltaU = alpha - alphaU
-            deltaL = alpha - alphaL
+            g = g + beta**2 * c**2 / (delta * (alpha * delta - beta**2))
+            c = c * beta / delta
+            delta = alpha - beta**2 / delta
+            deltaU = alpha - lambda_min - beta**2 / deltaU
+            deltaL = alpha - lambda_max - beta**2 / deltaL
 
-        beta = np.inner(u, u)
-        u = u - gamma * np.dot(A, p)
-        beta = np.dot(u,u) / beta
-        eta = beta / (gamma**2)
-        p = u + beta * p
+        uT = tmp - alpha * uCurr - beta * uPrev
+        beta = np.linalg.norm(uT)
+        alphaU = lambda_min + beta**2 / deltaU
+        alphaL = lambda_max + beta**2 / deltaL
 
-        alphaU = lambda_min + eta / deltaU
-        alphaL = lambda_max + eta / deltaL
-        alphaT = deltaU * deltaL / (deltaL - deltaU)
-        etaT = alphaT * (lambda_max - lambda_min)
-        alphaT = alphaT * (lambda_max / deltaU - lambda_min / deltaL)
+        uPrev = uCurr
+        uCurr = uT / beta
 
-        fU = eta * c / (delta * (alphaU * delta - eta))
-        fL = eta * c / (delta * (alphaL * delta - eta))
-        fT = etaT * c / (delta * (alphaT * delta - etaT))
-
-        g = g + f
         gauss[0] = u_len * g
-        gauss[1] = u_len * (g + fL)
-        gauss[2] = u_len * (g + fU)
-        gauss[3] = u_len * (g + fT)
+        gauss[1] = u_len * (g + beta**2 * c**2 / (delta * (alphaL * delta - beta**2)))
+        gauss[2] = u_len * (g + beta**2 * c**2 / (delta * (alphaU * delta - beta**2)))
 
         # print('prob: {}, trutu: {}, l1: {}, l2: {}, u1: {}, u2: {}'.format( \
         #     prob, truth, gauss[0], gauss[1], gauss[2], gauss[3]))
 
         # approximation is exact
-        if eta < 1e-10:
+        if beta < 1e-10:
             if prob < gauss[0]:
                 return True
             else:
                 return False
 
-        if prob < max(gauss[:2]):
+        if prob <= gauss[1]:
             return True
-        elif prob > min(gauss[2:]):
+        elif prob > gauss[2]:
             return False
 
-    if prob < max(gauss[:2]) + min(gauss[2:]) / 2:
+    kappa = lambda_max / lambda_min
+    if prob < gauss[1]*kappa / (kappa+1) + gauss[2] / (kappa+1) :
         return True
     else:
         return False
@@ -113,14 +92,14 @@ def gauss_kdpp_judge(A, u, v, prob, tar, lambda_min, lambda_max):
     K = A.shape[0]
     gauss_U, gauss_V = np.zeros(4), np.zeros(4)
     g_U, g_V = 0, 0
-    len_U, len_V = np.dot(u,u), np.dot(v,v)
+    len_U, len_V = np.inner(u,u), np.inner(v,v)
 
     # case that the vector is too small
     if len_U < 1e-10:
-        return gauss_dpp_judge(A, v, tar/prob, lambda_min, lambda_max);
+        return gauss_dpp_judge(A, v, tar/prob, lambdaMin, lambdaMax);
 
     elif len_V < 1e-10:
-        return not gauss_dpp_judge(A, u, -tar, lambda_min, lambda_max);
+        return not gauss_dpp_judge(A, u, -tar, lambdaMin, lambdaMax);
 
     p_U = np.copy(u)
     p_V = np.copy(v)
@@ -146,7 +125,7 @@ def gauss_kdpp_judge(A, u, v, prob, tar, lambda_min, lambda_max):
     gap_V = -1
 
     # proceed_u():
-    newGamma_U = np.dot(u, u) / np.dot(p_U, np.dot(A, p_U))
+    newGamma_U = np.inner(u, u) / np.inner(p_U, A.dot(p_U))
     alpha_U = 1 / newGamma_U + beta_U / gamma_U
     gamma_U = newGamma_U
 
@@ -155,9 +134,9 @@ def gauss_kdpp_judge(A, u, v, prob, tar, lambda_min, lambda_max):
     deltaU_U = alpha_U - lambda_min
     deltaL_U = alpha_U - lambda_max
 
-    beta_U = np.dot(u, u)
-    u = u - gamma_U * np.dot(A, p_U)
-    beta_U = np.dot(u, u) / beta_U
+    beta_U = np.inner(u, u)
+    u = u - gamma_U * A.dot(p_U)
+    beta_U = np.inner(u, u) / beta_U
     eta_U = beta_U / (gamma_U**2)
     p_U = u + beta_U * p_U
 
@@ -180,7 +159,7 @@ def gauss_kdpp_judge(A, u, v, prob, tar, lambda_min, lambda_max):
 
 
     # proceed_v():
-    newGamma_V = np.dot(v, v) / np.dot(p_V, np.dot(A, p_V))
+    newGamma_V = np.inner(v, v) / np.inner(p_V, A.dot(p_V))
     alpha_V = 1 / newGamma_V + beta_V / gamma_V
     gamma_V = newGamma_V
 
@@ -189,9 +168,9 @@ def gauss_kdpp_judge(A, u, v, prob, tar, lambda_min, lambda_max):
     deltaU_V = alpha_V - lambda_min
     deltaL_V = alpha_V - lambda_max
 
-    beta_V = np.dot(v, v)
-    v = v - gamma_V * np.dot(A, p_V)
-    beta_V = np.dot(v, v) / beta_V
+    beta_V = np.inner(v, v)
+    v = v - gamma_V * A.dot(p_V)
+    beta_V = np.inner(v, v) / beta_V
     eta_V = beta_V / (gamma_V**2)
     p_V = v + beta_V * p_V
 
@@ -218,9 +197,9 @@ def gauss_kdpp_judge(A, u, v, prob, tar, lambda_min, lambda_max):
     elif tar >= prob * np.min(gauss_V[2:]) - np.max(gauss_U[:2]):
         return False
 
-    for k in xrange(2*K):
+    for k in xrange(4*K):
         if gap_U >= prob * gap_V:
-            newGamma_U = np.dot(u, u) / np.dot(p_U, np.dot(A, p_U))
+            newGamma_U = np.inner(u, u) / np.inner(p_U, A.dot(p_U))
             alpha_U = 1 / newGamma_U + beta_U / gamma_U
             gamma_U = newGamma_U
 

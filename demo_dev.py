@@ -23,8 +23,8 @@ D, V = utils.get_eig(L, flag_gpu=flag_gpu)
 
 # Samples and plot from unif and standard DPPs
 print('DPP-Eigendecomp')
-dpp_smpl  = dpp.sample(D, V, flag_gpu=flag_gpu)
-mc_init = utils.kpp(L, len(X), flag_kernel=True)
+dpp_smpl = dpp.sample(D, V, flag_gpu=flag_gpu)
+mc_init = utils.kpp(L, len(dpp_smpl), flag_kernel=True)
 print('DPP-MCMC')
 mcdpp_smpl = mcdpp.sample(L, 5000, init_rst=mc_init, flag_gpu=flag_gpu)
 unif_smpl = np.random.permutation(len(X))[:len(dpp_smpl)]
