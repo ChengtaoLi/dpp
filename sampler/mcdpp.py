@@ -20,6 +20,7 @@ def sample(L, mix_step, k=None, init_rst=None, flag_gpu=False):
         # general dpp
         if rst is None:
             rst = np.random.permutation(N)[:N//3]
+        rst = np.sort(rst)
 
         A = np.copy(L[np.ix_(rst, rst)])
 
@@ -38,12 +39,11 @@ def sample(L, mix_step, k=None, init_rst=None, flag_gpu=False):
             if ind.size == 0: # try to add
                 # print('adding...')
                 flag = quadrature.gauss_dpp_judge(A, bu[0], cu[0,0]-np.random.uniform(), lambda_min, lambda_max)
-                if not flag:
+                if flag is False:
                     rst = np.append(rst, [u])
                     A = np.r_[np.c_[A, bu.transpose()], np.c_[bu, cu]]
 
             else: # try to remove
-                ind = ind[0]
                 tmp_rst = np.copy(rst)
                 tmp_rst = np.delete(tmp_rst, ind)
                 tmp_A = np.copy(A)
@@ -52,7 +52,7 @@ def sample(L, mix_step, k=None, init_rst=None, flag_gpu=False):
                 bu = np.delete(bu, ind, axis=1)
 
                 flag = quadrature.gauss_dpp_judge(tmp_A, bu[0], cu[0,0]-1/np.random.uniform(), lambda_min, lambda_max)
-                if flag:
+                if flag is True:
                     rst = tmp_rst
                     A = tmp_A
                 

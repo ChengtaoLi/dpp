@@ -10,7 +10,8 @@ This repository includes sampling methods for *determinantal point processes* (*
 
 ## Currently Available Methods
 
-* Exact (k)DPP sampling (with eigen-decomposition)
+* (Python) Exact (k)DPP sampling (with eigen-decomposition)
+* (Matlab) Markov Chain Monte Carlo Sampling for (k)DPP (with Gaussian-Auadrature Acceleration)
 
 ## Under Construction
 
